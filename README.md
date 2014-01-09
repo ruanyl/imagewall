@@ -1,4 +1,2 @@
-jquery-plugin-template
+Jquery Image Wall
 ======================
-
-It is a jquery plugin template.
