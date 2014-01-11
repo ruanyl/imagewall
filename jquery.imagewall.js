@@ -3,10 +3,7 @@
     (function(pluginName) {
         var defaults = {
             height : 240,
-            width  : "auto",
-            testFor : function(div) {
-                return true;
-            }
+            width  : "auto"
         };
         $.fn[pluginName] = function(options) {
             options = $.extend(true, {}, defaults, options);
