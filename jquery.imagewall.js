@@ -11,37 +11,112 @@
         $.fn[pluginName] = function(options) {
             options = $.extend(true, {}, defaults, options);
 
+            /**
+            * image loaded function from TangBin
+            * @version 2011.05.27
+            * @author  TangBin
+            * @see     http://www.planeart.cn/?p=1121
+            * @param   {String}    image path
+            * @param   {Function}  size ready
+            * @param   {Function}  loaded (optional)
+            * @param   {Function}  error (optional)
+            * @example imgReady('http://www.google.com.hk/intl/zh-CN/images/logo_cn.png', function () {
+                    alert('size ready: width=' + this.width + '; height=' + this.height);
+                });
+            */
+            var _imgReady = (function () {
+                var list = [], intervalId = null,
+
+                // 用来执行队列
+                tick = function () {
+                    var i = 0;
+                    for (; i < list.length; i++) {
+                        list[i].end ? list.splice(i--, 1) : list[i]();
+                    };
+                    !list.length && stop();
+                },
+
+                // 停止所有定时器队列
+                stop = function () {
+                    clearInterval(intervalId);
+                    intervalId = null;
+                };
+
+                return function (url, ready, load, error) {
+                    var onready, width, height, newWidth, newHeight,
+                        img = new Image();
+
+                    img.src = url;
+
+                    // If cached, return data directly
+                    if (img.complete) {
+                        ready.call(img);
+                        load && load.call(img);
+                        return;
+                    };
+
+                    width = img.width;
+                    height = img.height;
+
+                    // loaded error
+                    img.onerror = function () {
+                        error && error.call(img);
+                        onready.end = true;
+                        img = img.onload = img.onerror = null;
+                    };
+
+                    // image size ready
+                    onready = function () {
+                        newWidth = img.width;
+                        newHeight = img.height;
+                        if (newWidth !== width || newHeight !== height ||
+                            // if image loaded at other place with available size
+                            newWidth * newHeight > 1024
+                        ) {
+                            ready.call(img);
+                            onready.end = true;
+                        };
+                    };
+                    onready();
+
+                    // loaded completely
+                    img.onload = function () {
+                        // onload在定时器时间差范围内可能比onready快
+                        // 这里进行检查并保证onready优先执行
+                        !onready.end && onready();
+
+                        load && load.call(img);
+
+                        // IE gif动画会循环执行onload，置空onload即可
+                        img = img.onload = img.onerror = null;
+                    };
+
+                    // 加入队列中定期执行
+                    if (!onready.end) {
+                        list.push(onready);
+                        // 无论何时只允许出现一个定时器，减少浏览器性能损耗
+                        if (intervalId === null) intervalId = setInterval(tick, 40);
+                    };
+                };
+            })();
+
             var _resize = function() {
-                $this           = $(this),
+                var $this           = $(this),
                 _src           = $this.attr("src"),
                 _width         = 0,
                 _height        = 0,
                 width          = 0,
-                height         = 0,
-                _imgObject     = new Image();
-                _imgObject.src = _src;
+                height         = 0;
 
-                if(_imgObject.complete) {
-                    _width  = _imgObject.width;
-                    _height = _imgObject.height;
-                    var WH = _calculateWH(_width, _height);
+                _imgReady(_src, function(){
+                    var WH = _calculateWH(this.width, this.height);
                     $this.attr({
                         width:WH.width,
                         height:WH.height
                     });
                     _setPosition.call($this, $elem);
-                } else {
-                    _imgObject.onload = function() {
-                        _width  = _imgObject.width;
-                        _height = _imgObject.height;
-                        var WH = _calculateWH(_width, _height);
-                        $this.attr({
-                            width:WH.width,
-                            height:WH.height
-                        });
-                        _setPosition.call($this, $elem);
-                    }
-                }
+                });
+
             };
 
             var _calculateWH = function(_width, _height) {
@@ -65,10 +140,10 @@
                 var $this = this;
                 var _containerPaddingLeftCss = container.css("padding-left"),
                 _containerPaddingTopCss = container.css("padding-top"),
-                _containerPaddingLeft = _containerPaddingLeftCss ? _containerPaddingLeftCss.substring(0, _containerPaddingLeftCss.length-2) : 0;
-                _containerPaddingTop = _containerPaddingTopCss ? _containerPaddingTopCss.substr(0, _containerPaddingTopCss.length-2) : 0;
+                _containerPaddingLeft = parseInt(_containerPaddingLeftCss ? _containerPaddingLeftCss.substring(0, _containerPaddingLeftCss.length-2) : 0);
+                _containerPaddingTop = parseInt(_containerPaddingTopCss ? _containerPaddingTopCss.substr(0, _containerPaddingTopCss.length-2) : 0);
 
-                if(container.children().length) {
+                if(container.children().length > 0) {
                     var _lastChild        = container.children().last(),
                     _lastChildX           = _lastChild.position().left,
                     _lastChildY           = _lastChild.position().top,
