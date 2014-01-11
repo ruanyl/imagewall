@@ -1,0 +1,48 @@
+/*****************************************************************************/
+
+/*
+/* Common
+/*
+/*****************************************************************************/
+
+/* Global Reset */
+ body, div, dl, dt, dd, ul, ol, li, h1, h2, h3, h4, h5, h6, pre, code, form, fieldset, legend, input, button, textarea, p, blockquote, th, td {
+    margin:0;
+    padding:0;
+}
+ul, ol, li {
+    list-style:none;
+}
+h1, h2, h3, h4, h5, h6 {
+    font-family: "Open Sans", "Helvetica", "Arial";
+    font-weight:normal;
+}
+table {
+    border-collapse:collapse;
+    border-spacing:0;
+}
+select, input, button, textarea {
+    font:100% arial;
+    outline:none;
+}
+body {
+    font:1em Arial;
+    color:#555;
+}
+img {
+    border:0;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+}
+.images {
+    position: relative;
+    overflow: hidden;
+    margin:0 auto;
+    height: 1000px;
+}
+.images img {
+    padding: 2px;
+}
