@@ -1,6 +1,9 @@
 Jquery Image Wall
 ======================
 
+### Demo:
+http://ruanyl.github.io/imagewall
+
 ### usage:
 
 	$(".container").imagewall(); //default image height is 240px, width is 'auto'
