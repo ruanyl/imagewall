@@ -14,8 +14,7 @@ http://ruanyl.github.io/imagewall
 	//for both
 	$(".container").imagewall({height: 300, width:300});
 	
-	//but function not implemented if height is auto while width with a specifed number
 	
 ### TODO:
 
-	specify width and height is 'auto'
+	specify width with auto height
