@@ -8,6 +8,9 @@
     <script src="jquery.imagewall.js"></script>
     <script language="javascript" type="text/javascript">
         $(document).ready(function() {
+            window.onresize = function(){
+                $(".images").imagewall();
+            };
             $(".images").imagewall();
         });
     </script>
