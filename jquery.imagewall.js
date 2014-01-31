@@ -2,11 +2,9 @@
     // multiple plugins can go here
     (function(pluginName) {
         var defaults = {
-            height : 240,
-            width  : "auto",
-            testFor : function(div) {
-                return true;
-            }
+            height        : 240,
+            width         : "auto",
+            shadowOnHover : true
         };
         $.fn[pluginName] = function(options) {
             options = $.extend(true, {}, defaults, options);
@@ -101,12 +99,12 @@
             })();
 
             var _resize = function() {
-                var $this           = $(this),
-                _src           = $this.attr("src"),
-                _width         = 0,
-                _height        = 0,
-                width          = 0,
-                height         = 0;
+                var $this = $(this),
+                _src      = $this.attr("src"),
+                _width    = 0,
+                _height   = 0,
+                width     = 0,
+                height    = 0;
 
                 _imgReady(_src, function(){
                     var WH = _calculateWH(this.width, this.height);
@@ -173,6 +171,13 @@
             $elem.empty();
             imgs.each(function() {
                 _resize.call(this);
+                if(options.shadowOnHover) {
+                    $(this).on('mouseover', function() {
+                        $(this).css({'box-shadow' : '0px 0px 15px 6px #000', 'z-index' : 999});
+                    }).on('mouseout', function() {
+                        $(this).css({'box-shadow' : '', 'z-index' : ''});
+                    });
+                }
             });
 
         };
