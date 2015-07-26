@@ -163,7 +163,9 @@
                     top : _newChildY + "px",
                     left : _newChildX + "px"
                 })
+                var containerHeight = _newChildY + parseInt($this.attr('height'));
                 container.append($this);
+                container.css({height: containerHeight + 'px'});
             };
 
             var $elem = this;
